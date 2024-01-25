@@ -9,13 +9,16 @@ def bag_contents(request):
     bag_items = []
     total = 0
     product_count = 0
-
     bag = request.session.get('bag', {})
-    for key in bag:
-        product_id = int(key)
-        bag_items.append(product_id)
-        product = get_object_or_404(Product, id=product_id)
-        quantity = bag[key]
+
+    for item, quantity in bag.items():
+        item_id = int(item)
+        product = get_object_or_404(Product, id=item_id)
+        bag_items.append({
+            'item_id' : item_id,
+            'quantity' : quantity,
+            'product' : product,
+        })
 
         total += product.price * quantity
         product_count += quantity
