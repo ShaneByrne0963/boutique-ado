@@ -1,0 +1,46 @@
+<script type="text/javascript">
+
+    // Disable +/- buttons outside 1-99 range
+    function handleEnableDisable(itemId) {
+        let currentValue = parseInt($(`#id_qty_${itemId}`).val());
+        let minusDisabled = currentValue <= 1;
+        let plusDisabled = currentValue >= 99;
+        $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled);
+        $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
+    }
+
+    // Increment the quantity by 1
+    $('.increment-qty').click(function(e) {
+        e.preventDefault();
+        let closestInput = $(this).closest('.input-group').find('.qty_input')[0];
+        let currentValue = parseInt($(closestInput).val());
+
+        $(closestInput).val(currentValue + 1);
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    });
+
+    // Decrement the quantity by 1
+    $('.decrement-qty').click(function(e) {
+        e.preventDefault();
+        let closestInput = $(this).closest('.input-group').find('.qty_input')[0];
+        let currentValue = parseInt($(closestInput).val());
+
+        $(closestInput).val(currentValue - 1);
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    });
+
+    // Update all buttons depending on the quantity range
+    let allQtyInputs = document.querySelectorAll('.qty_input');
+    for (input of allQtyInputs) {
+        let itemId = $(input).data('item_id');
+        handleEnableDisable(itemId);
+    }
+
+    // Update the buttons if the user manually enters the quantity
+    $('.qty_input').change(function() {
+        let itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    })
+</script>
