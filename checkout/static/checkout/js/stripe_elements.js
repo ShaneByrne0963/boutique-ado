@@ -6,11 +6,11 @@
     https://stripe.com/docs/stripe-js
 */
 
-let stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
-let clientSecret = $('#id_client_secret').text().slice(1, -1);
-let stripe = Stripe(stripePublicKey);
-let elements = stripe.elements();
-let style = {
+var stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
+var clientSecret = $('#id_client_secret').text().slice(1, -1);
+var stripe = Stripe(stripePublicKey);
+var elements = stripe.elements();
+var style = {
     base: {
         color: '#000',
         fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
@@ -25,14 +25,14 @@ let style = {
         iconColor: '#dc3545'
     }
 };
-let card = elements.create('card', {style: style});
+var card = elements.create('card', {style: style});
 card.mount('#card-element');
 
 // Handle realtime validation errors on the card element
 card.addEventListener('change', function (event) {
-    let errorDiv = document.getElementById('card-errors');
+    var errorDiv = document.getElementById('card-errors');
     if (event.error) {
-        let html = `
+        var html = `
             <span class="icon" role="alert">
                 <i class="fas fa-times"></i>
             </span>
@@ -45,7 +45,7 @@ card.addEventListener('change', function (event) {
 });
 
 // Handle form submit
-let form = document.getElementById('payment-form');
+var form = document.getElementById('payment-form');
 
 form.addEventListener('submit', function(ev) {
     ev.preventDefault();
@@ -54,15 +54,16 @@ form.addEventListener('submit', function(ev) {
     $('#payment-form').fadeToggle(100);
     $('#loading-overlay').fadeToggle(100);
 
-    let saveInfo = Boolean($('#id-save-info').attr('checked'));
+    var saveInfo = Boolean($('#id-save-info').attr('checked'));
     // From using {% csrf_token %} in the form
-    let csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-    let postData = {
+    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+    var postData = {
         'csrfmiddlewaretoken': csrfToken,
         'client_secret': clientSecret,
         'save_info': saveInfo,
     };
-    let url = `/checkout/cache_checkout_data/`;
+    var url = '/checkout/cache_checkout_data/';
+
     $.post(url, postData).done(function() {
         stripe.confirmCardPayment(clientSecret, {
             payment_method: {
@@ -71,9 +72,9 @@ form.addEventListener('submit', function(ev) {
                     name: $.trim(form.full_name.value),
                     phone: $.trim(form.phone_number.value),
                     email: $.trim(form.email.value),
-                    address: {
+                    address:{
                         line1: $.trim(form.street_address1.value),
-                        line2: $.trim(form.street_address1.value),
+                        line2: $.trim(form.street_address2.value),
                         city: $.trim(form.town_or_city.value),
                         country: $.trim(form.country.value),
                         state: $.trim(form.county.value),
@@ -85,17 +86,17 @@ form.addEventListener('submit', function(ev) {
                 phone: $.trim(form.phone_number.value),
                 address: {
                     line1: $.trim(form.street_address1.value),
-                    line2: $.trim(form.street_address1.value),
+                    line2: $.trim(form.street_address2.value),
                     city: $.trim(form.town_or_city.value),
                     country: $.trim(form.country.value),
                     postal_code: $.trim(form.postcode.value),
                     state: $.trim(form.county.value),
-                },
+                }
             },
         }).then(function(result) {
             if (result.error) {
-                let errorDiv = document.getElementById('card-errors');
-                let html = `
+                var errorDiv = document.getElementById('card-errors');
+                var html = `
                     <span class="icon" role="alert">
                     <i class="fas fa-times"></i>
                     </span>
@@ -112,7 +113,7 @@ form.addEventListener('submit', function(ev) {
             }
         });
     }).fail(function() {
-        // Simply reload the page, with an error message sent to django messages
+        // just reload the page, the error will be in django messages
         location.reload();
     });
 });
