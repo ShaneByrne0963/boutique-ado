@@ -6,6 +6,7 @@ from django.conf import settings
 from .forms import OrderForm
 from .models import Order, OrderLineItem
 from products.models import Product
+from profiles.models import UserProfile
 from bag.contexts import bag_contents
 
 import stripe
@@ -53,6 +54,11 @@ def checkout(request):
             pid = request.POST.get('client_secret').split('_secret')[0]
             order.stripe_pid = pid
             order.original_bag = json.dumps(bag)
+
+            if request.user.is_authenticated:
+                profile = get_object_or_404(UserProfile, user=request.user)
+                order.user_profile = profile
+
             order.save()
             for item_id, item_data in bag.items():
                 try:
