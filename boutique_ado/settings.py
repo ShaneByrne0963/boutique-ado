@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = os.environ.get('DEVELOPMENT') == 'True'
 
 ALLOWED_HOSTS = [
-    '8000-shanebyrne0-boutiqueado-d2mtzrqsu2p.ws-eu107.gitpod.io',
+    '8000-shanebyrne0-boutiqueado-d2mtzrqsu2p.ws-eu108.gitpod.io',
 ]
 
 

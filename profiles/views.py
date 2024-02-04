@@ -1,15 +1,29 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib import messages
 
 from .models import UserProfile
+from .forms import UserProfileForm
 
 def profiles(request):
     """
     Display the user's profile
     """
-    user_profile = get_object_or_404(UserProfile, user=request.user)
+    profile = get_object_or_404(UserProfile, user=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile has been updated.")
+
     template = 'profiles/profile.html'
+    orders = profile.orders.all()
+
+    form = UserProfileForm(instance=profile)
     context = {
-        'profile': user_profile,
+        'profile_form': form,
+        'orders': orders,
+        'on_profile_page': True,
     }
 
     return render(request, template, context)
